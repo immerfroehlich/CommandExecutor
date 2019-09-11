@@ -5,6 +5,11 @@ import java.util.ArrayList;
 public class Command {
 	
 	ArrayList<String> tokens = new ArrayList<>();
+	String basePath = null;
+	
+	public void setBasePath(String basePath) {
+		this.basePath = basePath;
+	}
 
 	public void setCommand(String command) {
 		tokens.add(command);		
@@ -34,6 +39,10 @@ public class Command {
 
 	String getCommandWithoutParameters() {
 		return tokens.get(0);
+	}
+	
+	boolean isBasePathSet() {
+		return basePath != null;
 	}
 
 }

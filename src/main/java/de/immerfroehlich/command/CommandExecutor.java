@@ -1,5 +1,6 @@
 package de.immerfroehlich.command;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -28,7 +29,15 @@ public class CommandExecutor {
 			ExecutorService executor = Executors.newFixedThreadPool(2);
 			
 			String[] commands = command.toArray();
-			final Process process = Runtime.getRuntime().exec(commands);
+			
+			final Process process;
+			if(command.isBasePathSet()) {
+				File basePath = new File(command.basePath);
+				process = Runtime.getRuntime().exec(commands, null, basePath);
+			}
+			else {
+				process = Runtime.getRuntime().exec(commands);
+			}
 			
 			final InputStream in = process.getInputStream();
 			final InputStream err = process.getErrorStream();
