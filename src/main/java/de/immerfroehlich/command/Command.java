@@ -6,6 +6,7 @@ public class Command {
 	
 	ArrayList<String> tokens = new ArrayList<>();
 	String basePath = null;
+	byte[] stdin = null;
 	
 	public void setBasePath(String basePath) {
 		this.basePath = basePath;
@@ -17,6 +18,10 @@ public class Command {
 	
 	public void addParameter(String parameter) {
 		tokens.add(parameter);
+	}
+	
+	public void setStdin(byte[] stdin) {
+		this.stdin = stdin;
 	}
 	
 	String[] toArray() {
@@ -43,6 +48,10 @@ public class Command {
 	
 	boolean isBasePathSet() {
 		return basePath != null;
+	}
+	
+	boolean isStdinSet() {
+		return stdin != null;
 	}
 
 }

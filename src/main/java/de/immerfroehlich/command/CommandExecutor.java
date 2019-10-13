@@ -1,8 +1,10 @@
 package de.immerfroehlich.command;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -26,7 +28,12 @@ public class CommandExecutor {
 			//Daher wäre es besser, dies nur einmal beim instantiieren der Klasse zu machen.
 			//Problem ist, dann lässt sich der Executor nicht herunterfahren, was dazu führt,
 			//dass Threads offen bleiben und das Java-Programm nicht beendet wird.
-			ExecutorService executor = Executors.newFixedThreadPool(2);
+			int threadNumber = 2;
+			final boolean addsStdin = command.isStdinSet();
+			if(addsStdin) {
+				threadNumber = 3;
+			}
+			ExecutorService executor = Executors.newFixedThreadPool(threadNumber);
 			
 			String[] commands = command.toArray();
 			
@@ -60,6 +67,25 @@ public class CommandExecutor {
 			
 			Future<byte[]> stdout = executor.submit(stdoutCallable);
 			Future<List<String>> stderr = executor.submit(stderrCallable);
+			
+			if(addsStdin) {
+				final OutputStream out = process.getOutputStream();
+				
+				Runnable task = new Runnable() {
+					@Override
+					public void run() {
+						try {
+							BufferedOutputStream bufferedOut = IOUtils.buffer(out);
+							IOUtils.write(command.stdin, bufferedOut);
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+				};
+				
+				executor.submit(task);
+			}
 			
 			int exitCode = process.waitFor();
 			byte[] stdOut = stdout.get();
