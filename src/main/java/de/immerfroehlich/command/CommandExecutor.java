@@ -77,6 +77,8 @@ public class CommandExecutor {
 						try {
 							BufferedOutputStream bufferedOut = IOUtils.buffer(out);
 							IOUtils.write(command.stdin, bufferedOut);
+							bufferedOut.flush();
+							bufferedOut.close();
 						} catch (IOException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
