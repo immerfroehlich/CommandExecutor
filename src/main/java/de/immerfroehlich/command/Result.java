@@ -47,4 +47,16 @@ public class Result {
 		//At least cdparanoia is able to output regular messages to stderr.
 		return stdErr.size() > 0;
 	}
+	
+	public void printStdErr() {
+		for(String error : getStdErr()) {
+			System.err.println(error);
+		}
+	}
+	
+	public void printResult() {
+		for(String result : asStringList()) {
+			System.out.println(result);
+		}
+	}
 }
