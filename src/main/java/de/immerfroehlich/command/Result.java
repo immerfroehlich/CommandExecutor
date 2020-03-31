@@ -2,6 +2,7 @@ package de.immerfroehlich.command;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
@@ -36,6 +37,11 @@ public class Result {
 			throw new RuntimeException("Could not read from byte[] stdout. This should never have happened.", e);
 		}
 		return output;
+	}
+	
+	public InputStream asInputStream() {
+		byte[] byteResult = asByteArray();
+		return new ByteArrayInputStream(byteResult);
 	}
 	
 	public List<String> getStdErr() {
